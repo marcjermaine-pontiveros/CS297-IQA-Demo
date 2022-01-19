@@ -129,7 +129,7 @@ if __name__ == "__main__":
 
         counts = run_circuit(qc, shots = shots)
 
-        hist_plot = plot_histogram(counts.get_counts)
+        hist_plot = plot_histogram(counts.get_counts(0))
 
         st.markdown(
             """
