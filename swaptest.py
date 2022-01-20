@@ -153,7 +153,7 @@ if __name__ == "__main__":
 
         st.pyplot(fig = hist_plot)
         
-    with st.expander("More Details:"):
+    with st.expander("More Information and About the Simulation"):
         st.markdown("""
             When developing the simulation system, several assumptions are made:
             
@@ -161,14 +161,16 @@ if __name__ == "__main__":
             2. The RSS values are based on distance estimation model presented by [Prabakar et al., 2015](https://www.youtube.com/watch?v=CWvRJdF7oVE).
             3. To perform fingerprint matching, the quantum algorithm proposed by [Shokry et al., 2020](https://arxiv.org/pdf/2106.11751.pdf) is used. The algorithm consists of three parts:
             
-            - State Preparation (Amplitude encoding of $n$-dimensional vectors to $log_2(n)$ qubits
+                - State Preparation (Amplitude encoding of $n$-dimensional vectors to $log_2(n)$ qubits
             
-            - Input Processing using Swap Test
+                - Input Processing using Swap Test
             
-            - Computing Similarity Scores using Measurement Gates. 
+                - Computing Similarity Scores using Measurement Gates. 
+            
+            4. To estimate the similarity score, the swap test is applied 10000 times.
             
             The web app renders the circuit diagram for computing the similarity score between the current RSS vector of the receiver (Test Vector) and the Fingerprint Vector identified as match
-            by the quantum algorithm. To estimate the similarity score, the swap test is applied 10000 times. 
+            by the quantum algorithm. Feedbacks are very welcome, especially how the computation of RSS values can be improved/simulated and how the effect of the walls can be added to the system.
             
         """)
 
