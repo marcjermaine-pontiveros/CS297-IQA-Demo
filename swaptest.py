@@ -61,8 +61,6 @@ def get_fp_rssi_probability_database(fp_rssi_d, rssi_vector):
     return fp_rssi_probability_d, key_max
 
 if __name__ == "__main__":
-    st.markdown("# Indoor Localization ")
-    st.markdown("### Quantum Fingerprint Matching Protocol")
 
     # map resource location
     im = plt.imread('resources/wh-floorplan.PNG')
@@ -90,7 +88,9 @@ if __name__ == "__main__":
     rssi_test_vector_pass = None 
     prob_loc_pass = None
     with st.sidebar:
-        st.markdown("## Move the Test Vector Location")
+        st.markdown("# Indoor Localization ")
+        st.markdown("## Using Quantum Fingerprint Matching Protocol")
+        st.markdown("### Move Blue Dot's Location to Estimate RSS from 4 APs")
         x_p = st.slider(label="X-axis", min_value = 0, value=400, max_value = 700)
         y_p = st.slider(label="Y-axis", min_value = 0, value=394, max_value = 700)
 
