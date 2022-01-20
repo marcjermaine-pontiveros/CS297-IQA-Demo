@@ -160,9 +160,15 @@ if __name__ == "__main__":
             1. The map is obstacle-free. Meaning the walls do not affect the Received Signal Strength from different APs.
             2. The RSS values are based on distance estimation model presented by [Prabakar et al., 2015](https://www.youtube.com/watch?v=CWvRJdF7oVE).
             3. To perform fingerprint matching, the quantum algorithm proposed by [Shokry et al., 2020](https://arxiv.org/pdf/2106.11751.pdf) is used. The algorithm consists of three parts:
-            State Preparation (Amplitude encoding of $n$-dimensional vectors to $log_2(n)$ qubits; Input Processing using Swap Test; and computing Similarity Scores using Measurement Gates. 
+            
+            - State Preparation (Amplitude encoding of $n$-dimensional vectors to $log_2(n)$ qubits
+            
+            - Input Processing using Swap Test
+            
+            - Computing Similarity Scores using Measurement Gates. 
+            
             The web app renders the circuit diagram for computing the similarity score between the current RSS vector of the receiver (Test Vector) and the Fingerprint Vector identified as match
-            by the quantum algorithm.
+            by the quantum algorithm. To estimate the similarity score, the swap test is applied 10000 times. 
             
         """)
 
