@@ -7,6 +7,7 @@ name = "pypi"
 streamlit = "*"
 streamlit-aggrid = "*"
 qiskit = "*"
+matplotlib = "*"
 
 [dev-packages]
 
