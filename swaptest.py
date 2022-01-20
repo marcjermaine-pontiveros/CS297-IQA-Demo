@@ -107,9 +107,7 @@ if __name__ == "__main__":
             RSS Test Vector: \n
             {rssi_test_vector}
             """)
-        st.markdown(f"""**Probable Location**: \n 
-                    {fp_l_database[prob_loc]}
-                    """)
+        st.markdown(f"**Probable Location**: {fp_l_database[prob_loc]}")
 
         # st.dataframe(pd.DataFrame.from_dict(fp_rssi_database, orient='index', columns = ['RSSI_A', 'RSSI_B', 'RSSI_C', 'RSSI_D']))
         prob_loc_pass, rssi_test_vector_pass = prob_loc, rssi_test_vector
