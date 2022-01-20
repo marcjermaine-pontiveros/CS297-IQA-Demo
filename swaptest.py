@@ -124,7 +124,7 @@ if __name__ == "__main__":
         v2_state_norm = v2_state / np.linalg.norm(v2_state)
 
         qc, num_qubits = qubit_by_qubit_swaptest(v1_state_norm, v2_state_norm)
-        qc_plot = qc.draw(output='mpl', style={'backgroundcolor': '#000000'})
+        qc_plot = qc.draw(output='mpl')
         st.pyplot(fig=qc_plot)
 
         counts = run_circuit(qc, shots = shots)
