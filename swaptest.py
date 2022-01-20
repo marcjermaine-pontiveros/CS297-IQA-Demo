@@ -107,7 +107,7 @@ if __name__ == "__main__":
             RSS Test Vector: \n
             {rssi_test_vector}
             """)
-        st.markdown(f"""<b> Probable Location </b>: \n 
+        st.markdown(f"""**Probable Location**: \n 
                     {fp_l_database[prob_loc]}
                     """)
 
