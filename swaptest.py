@@ -65,7 +65,7 @@ if __name__ == "__main__":
     st.markdown("### Using Quantum Fingerprint Matching Protocol")
 
     # map resource location
-    im = plt.imread('/app/cs297-iqa-demo/resources/wh-floorplan.png')
+    im = plt.imread('resources/wh-floorplan.PNG')
     plt.imshow(im)
 
     ## Fingerprint Database
