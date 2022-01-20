@@ -62,7 +62,12 @@ def get_fp_rssi_probability_database(fp_rssi_d, rssi_vector):
 
 if __name__ == "__main__":
     st.markdown("# Indoor Localization ")
-    st.markdown("### Using Quantum Fingerprint Matching Protocol")
+    st.markdown("### Quantum Fingerprint Matching Protocol")
+    st.markdown(""" 
+        In this map, you may navigate as a blue dot to check the Received Signal Strength (RSS) of your receiver from four Access Points (APs) (green dots).\n 
+        Based on RSS vector of your receiver and the RSS fingerprint vectors recorded in Reference Points (RPs), we can approximate the indoor location of blue dot using
+        swap test or quantum fingerprint matching protocol.\n
+        """)
 
     # map resource location
     im = plt.imread('resources/wh-floorplan.PNG')
