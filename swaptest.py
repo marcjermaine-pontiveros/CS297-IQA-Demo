@@ -130,7 +130,7 @@ if __name__ == "__main__":
     with st.expander("Quantum Circuit Implementing the Fingerprint Matching"):
         st.markdown(
             rf"""
-            The circuit used for estimating the user's location.
+            ### The circuit used for estimating the user's location.
             After running the circuit to compare the RSS test vector with each of the 7 Fingerprint RSS vectors, the one with the highest similarity to RSS test vector is identified.
             The fingerprint with the highest similarity at this moment is the one located at {fp_l_database[prob_loc]}. 
 
