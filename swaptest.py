@@ -128,6 +128,17 @@ if __name__ == "__main__":
 
 
     with st.expander("Quantum Circuit Implementing the Fingerprint Matching"):
+        st.markdown(
+            rf"""
+            The circuit used for estimating the user's location.
+            After running the circuit to compare the RSS test vector with each of the 7 Fingerprint RSS vectors, the one with the highest similarity to RSS test vector is identified.
+            The fingerprint with the highest similarity at this moment is the one located at {fp_l_database[prob_loc]}. 
+
+            In this circuit, the vectors are represented as 2-qubit states, the test vector is represented by $| \psi_1 ⟩ = \alpha_0 |00⟩ + \alpha_1 | 01 ⟩ + \alpha_3 |10⟩ + \alpha_4 | 11 ⟩$, and the fingerprint vector is represented by $| \psi_2 ⟩ = \beta_0 |00⟩ + \beta_1 | 01 ⟩ + \beta_3 |10⟩ + \beta_4 | 11 ⟩$. 
+            The vectors are encoded into qubit states using [amplitude encoding](https://hillside.net/plop/2020/papers/weigold.pdf).
+            """
+        )
+
         shots = 10000
         v1_state = np.array(rssi_test_vector)
         v2_state = np.array(fp_rssi_database[prob_loc_pass])
@@ -144,8 +155,13 @@ if __name__ == "__main__":
         hist_plot = plot_histogram(counts.get_counts(0))
 
         st.markdown(
-            """
-            Measurement
+            rf"""
+            ### Measurement
+
+            The circuit computes the similarity between the two states by applying the measurement gate on the ancillary qubit at $q_4$. When measured, the state of $q_4$ collapses into
+            either 0 or 1. The circuit is applied 10000 times and in each run the result is recorded. The summary of runs is presented in the histogram below.
+
+            If the two states (or the two vectors) are similar, then the probability that $0$ is measured is close to $1$.  Otherwise, if the two states are orthogonal, then the probability that $0$ is measured is close to $\frac{1}{2}$.  
             """
         )
 
