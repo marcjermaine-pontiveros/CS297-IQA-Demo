@@ -1,5 +1,6 @@
-streamlit
-streamlit-aggrid
-pylatexenc
-qiskit
-matplotlib
+streamlit==1.34.0
+streamlit-aggrid==1.0.5
+pylatexenc==2.10
+qiskit==1.0.2
+qiskit-aer==0.14.1
+matplotlib==3.8.4

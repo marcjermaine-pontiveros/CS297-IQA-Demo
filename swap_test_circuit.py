@@ -1,6 +1,7 @@
 import numpy as np 
 from math import pi,sin,cos,asin,acos,sqrt,ceil, log10, log2
-from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister, execute, Aer, transpile
+from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister, transpile
+from qiskit_aer import Aer
 
 def qubit_by_qubit_swaptest(v1_state_norm, v2_state_norm):
     """
