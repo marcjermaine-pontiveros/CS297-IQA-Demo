@@ -32,7 +32,7 @@ def qubit_by_qubit_swaptest(v1_state_norm, v2_state_norm):
     if vector_dim == 0:
         # This case should ideally be prevented by compute_similarity before calling this function.
         raise ValueError("Input vector dimension is 0. Cannot create a quantum state.")
-    if (vector_dim & (vector_dim - 1)) != 0 or vector_dim == 0:
+    if (vector_dim & (vector_dim - 1)) != 0:
         # Also a safeguard, as compute_similarity should handle this.
         raise ValueError(f"Input vector dimension {vector_dim} is not a power of 2.")
 
