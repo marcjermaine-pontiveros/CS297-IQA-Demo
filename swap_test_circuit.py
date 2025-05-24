@@ -1,7 +1,8 @@
-import numpy as np 
-from math import pi,sin,cos,asin,acos,sqrt,ceil, log10, log2
+import numpy as np
+from math import pi, sin, cos, asin, acos, sqrt, ceil, log10, log2
 from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister, transpile
 from qiskit_aer import Aer
+
 
 def qubit_by_qubit_swaptest(v1_state_norm, v2_state_norm):
     """
@@ -26,8 +27,8 @@ def qubit_by_qubit_swaptest(v1_state_norm, v2_state_norm):
     # 1. State Preparation
     # Determine the dimension of the input vectors. This dimension must be a power of 2
     # as these vectors are expected to be pre-padded by the `compute_similarity` function.
-    vector_dim = len(v1_state_norm) 
-    
+    vector_dim = len(v1_state_norm)
+
     if vector_dim == 0:
         # This case should ideally be prevented by compute_similarity before calling this function.
         raise ValueError("Input vector dimension is 0. Cannot create a quantum state.")
@@ -36,18 +37,18 @@ def qubit_by_qubit_swaptest(v1_state_norm, v2_state_norm):
         raise ValueError(f"Input vector dimension {vector_dim} is not a power of 2.")
 
     # Number of qubits required to encode one vector via amplitude encoding.
-    num_qubits = int(log2(vector_dim)) 
-    
+    num_qubits = int(log2(vector_dim))
+
     # Declare quantum registers:
     # - num_qubits for the first vector (q1_l)
     # - num_qubits for the second vector (q2_l)
     # - 1 ancillary qubit for the SWAP test measurement
-    q = QuantumRegister(2 * num_qubits + 1, name = "q")
+    q = QuantumRegister(2 * num_qubits + 1, name="q")
     # Classical register to store the measurement result of the ancillary qubit
-    c = ClassicalRegister(1, name = "c")
-    
+    c = ClassicalRegister(1, name="c")
+
     qc = QuantumCircuit(q, c)
-    
+
     # Define qubit lists for initialization
     q1_l = list(range(num_qubits))
     q2_l = list(range(num_qubits, 2 * num_qubits))
@@ -55,14 +56,14 @@ def qubit_by_qubit_swaptest(v1_state_norm, v2_state_norm):
     # Initialize the quantum states using amplitude encoding
     qc.initialize(v1_state_norm, q1_l)
     qc.initialize(v2_state_norm, q2_l)
-    
+
     # End of 1. State Preparation
 
     # 2. SWAP Test Core
-    ancilla_qubit_idx = 2 * num_qubits # Index of the ancillary qubit
-    
+    ancilla_qubit_idx = 2 * num_qubits  # Index of the ancillary qubit
+
     # Apply Hadamard gate to the ancillary qubit
-    qc.h( q[ancilla_qubit_idx] ) 
+    qc.h(q[ancilla_qubit_idx])
 
     # Apply controlled-SWAP (Fredkin) gates.
     # The ancillary qubit is the control.
@@ -71,7 +72,7 @@ def qubit_by_qubit_swaptest(v1_state_norm, v2_state_norm):
         qc.cswap(ancilla_qubit_idx, q1_l[i], q2_l[i])
 
     # Apply Hadamard gate to the ancillary qubit again
-    qc.h( q[ancilla_qubit_idx] ) 
+    qc.h(q[ancilla_qubit_idx])
     # End of 2. SWAP Test Core
 
     # 3. Measurement
@@ -107,12 +108,12 @@ def compute_similarity(fp_vector, test_vector):
         float: The similarity score (P(0) from SWAP test), ranging from 0.0 to 1.0.
                A score of 0.0 can mean zero vectors or maximal dissimilarity.
     """
-    shots = 10000 # Number of times to run the quantum circuit for statistics
+    shots = 10000  # Number of times to run the quantum circuit for statistics
 
     vector_dim = len(fp_vector)
 
-    if vector_dim == 0: # Handles empty input vectors
-        return 0.0 
+    if vector_dim == 0:  # Handles empty input vectors
+        return 0.0
 
     # Ensure input vectors are numpy arrays of type float for numerical operations
     v1_state = np.array(test_vector, dtype=float)
@@ -128,12 +129,12 @@ def compute_similarity(fp_vector, test_vector):
     # Padding ensures the vector can be mapped to a quantum state of `num_qubits_for_vector` qubits.
     if vector_dim < required_dim:
         # Pad with constant value 0.0 at the end of the vectors.
-        v1_padded = np.pad(v1_state, (0, required_dim - vector_dim), 'constant', constant_values=0.0)
-        v2_padded = np.pad(v2_state, (0, required_dim - vector_dim), 'constant', constant_values=0.0)
-    else: # If vector_dim is already a power of 2, no padding is needed.
+        v1_padded = np.pad(v1_state, (0, required_dim - vector_dim), "constant", constant_values=0.0)
+        v2_padded = np.pad(v2_state, (0, required_dim - vector_dim), "constant", constant_values=0.0)
+    else:  # If vector_dim is already a power of 2, no padding is needed.
         v1_padded = v1_state
         v2_padded = v2_state
-    
+
     # Normalize the (padded) vectors to unit length for quantum state preparation.
     norm_v1 = np.linalg.norm(v1_padded)
     norm_v2 = np.linalg.norm(v2_padded)
@@ -146,29 +147,29 @@ def compute_similarity(fp_vector, test_vector):
 
     v1_state_norm = v1_padded / norm_v1
     v2_state_norm = v2_padded / norm_v2
-    
+
     # Construct the SWAP test circuit with the prepared (padded and normalized) states.
     # Their dimension is now `required_dim`, which is a power of 2.
     qc, _ = qubit_by_qubit_swaptest(v1_state_norm, v2_state_norm)
 
     # Run the quantum circuit on a simulator.
     counts_result = run_circuit(qc, shots=shots)
-    
+
     # Calculate the probability of measuring '0', which is the similarity score.
     # If '0' was never measured, .get('0', 0) returns 0.
-    measured_prob_0 = counts_result.get_counts(0).get('0', 0) / shots
+    measured_prob_0 = counts_result.get_counts(0).get("0", 0) / shots
     return measured_prob_0
 
 
-def run_circuit(qc, backend='qasm_simulator', shots=10000):
+def run_circuit(qc, backend="qasm_simulator", shots=10000):
     """
     Runs the given Qiskit quantum circuit on a specified Aer backend.
 
     Args:
         qc (QuantumCircuit): The Qiskit QuantumCircuit to simulate.
-        backend (str, optional): The Aer backend to use (e.g., 'qasm_simulator', 'statevector_simulator'). 
+        backend (str, optional): The Aer backend to use (e.g., 'qasm_simulator', 'statevector_simulator').
                                  Defaults to 'qasm_simulator'.
-        shots (int, optional): Number of times the circuit is run to collect measurement statistics. 
+        shots (int, optional): Number of times the circuit is run to collect measurement statistics.
                                Defaults to 10000. Not used by 'statevector_simulator'.
 
     Returns:

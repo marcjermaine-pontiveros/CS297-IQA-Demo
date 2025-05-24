@@ -1,5 +1,6 @@
-from math import log10 as math_log10 # Use math.log10 for scalar, np.log10 for array if needed.
+from math import log10 as math_log10  # Use math.log10 for scalar, np.log10 for array if needed.
 import numpy as np
+
 
 def rssi(ap, vec, noise_std_dev=0.0, A_ref=-40.0, n_val=3.0, d0=1.0):
     """
@@ -27,24 +28,24 @@ def rssi(ap, vec, noise_std_dev=0.0, A_ref=-40.0, n_val=3.0, d0=1.0):
     # Calculate Euclidean distance between AP and device vector.
     # Assuming input coordinates are in units that, when divided by 100.0, yield meters.
     distance_m = np.linalg.norm(np.array(ap) - np.array(vec)) / 100.0
-    
+
     # Distance capping: To avoid issues with log10(0) or extremely high RSSI at very short distances,
     # if the calculated distance is less than 10% of the reference distance d0,
     # cap it at 0.1 * d0. This prevents the argument of log10 from being <= 0.
     if distance_m < 0.1 * d0:
         distance_m = 0.1 * d0
-        
+
     # Standard Log-Distance Path Model formula
     # Using math.log10 as distance_m and d0 are scalars here.
     rssi_val = A_ref - (10 * n_val * math_log10(distance_m / d0))
-    
+
     if noise_std_dev > 0:
         # Add Gaussian noise if a standard deviation is provided
         noise = np.random.normal(0, noise_std_dev)
         rssi_val += noise
-        
+
     return rssi_val
-    
+
 
 def compute_rssi_d(fp_d, ap_d, noise_std_dev=0.0, num_samples_for_avg=1, A_ref=-40.0, n_val=3.0, d0=1.0):
     """
@@ -65,22 +66,27 @@ def compute_rssi_d(fp_d, ap_d, noise_std_dev=0.0, num_samples_for_avg=1, A_ref=-
         dict: Database of RSSI vectors {fp_id: [rssi_ap0, rssi_ap1, ...], ...}.
     """
     fp_rssi_d = dict()
-    rssi_dim = len(ap_d) 
-    
+    rssi_dim = len(ap_d)
+
     for fp_key, fp_value in fp_d.items():
-        avg_rssi_l = list() 
+        avg_rssi_l = list()
         for i in range(rssi_dim):
-            ap_coords = ap_d[f"ap{i}"] 
+            ap_coords = ap_d[f"ap{i}"]
             samples = [rssi(fp_value, ap_coords, noise_std_dev, A_ref, n_val, d0) for _ in range(num_samples_for_avg)]
-            avg_rssi_v = np.mean(samples) if num_samples_for_avg > 0 else rssi(fp_value, ap_coords, noise_std_dev, A_ref, n_val, d0)
+            avg_rssi_v = (
+                np.mean(samples)
+                if num_samples_for_avg > 0
+                else rssi(fp_value, ap_coords, noise_std_dev, A_ref, n_val, d0)
+            )
             avg_rssi_l.append(avg_rssi_v)
-        
+
         fp_rssi_d[fp_key] = avg_rssi_l
     return fp_rssi_d
 
+
 def compute_rssi(test_vector, ap_d, noise_std_dev=0.0, num_samples_for_avg=1, A_ref=-40.0, n_val=3.0, d0=1.0):
     """
-    Computes the RSSI vector for a single test vector (e.g., user's current location) 
+    Computes the RSSI vector for a single test vector (e.g., user's current location)
     against a database of access points, using the Standard Log-Distance Path Model.
     This function can simulate more realistic RSSI readings by incorporating Gaussian noise and averaging multiple samples.
 
@@ -96,13 +102,17 @@ def compute_rssi(test_vector, ap_d, noise_std_dev=0.0, num_samples_for_avg=1, A_
     Returns:
         list: A list of (averaged) RSSI values from each AP for the given test_vector.
     """
-    rssi_dim = len(ap_d) 
-    _rssi_avg = list() 
-    
+    rssi_dim = len(ap_d)
+    _rssi_avg = list()
+
     for i in range(rssi_dim):
-        ap_coords = ap_d[f"ap{i}"] 
+        ap_coords = ap_d[f"ap{i}"]
         samples = [rssi(test_vector, ap_coords, noise_std_dev, A_ref, n_val, d0) for _ in range(num_samples_for_avg)]
-        avg_rssi_v = np.mean(samples) if num_samples_for_avg > 0 else rssi(test_vector, ap_coords, noise_std_dev, A_ref, n_val, d0)
+        avg_rssi_v = (
+            np.mean(samples)
+            if num_samples_for_avg > 0
+            else rssi(test_vector, ap_coords, noise_std_dev, A_ref, n_val, d0)
+        )
         _rssi_avg.append(avg_rssi_v)
-        
+
     return _rssi_avg
