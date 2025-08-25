@@ -41,11 +41,11 @@ def get_probability_swap(test_vector, fp_vector):
     simulator = QasmSimulator()
     compiled_circuit = transpile(qc, simulator)
 
-    job = simulator.run(compiled_circuit, shots=10000)
+    job = simulator.run(compiled_circuit, shots=1981)
     result = job.result()
     counts = result.get_counts(compiled_circuit)
 
-    return counts["0"] / 10000
+    return counts["0"] / 1981
 
 
 def create_state(qc, i, theta=None, phi=None, mode="u"):

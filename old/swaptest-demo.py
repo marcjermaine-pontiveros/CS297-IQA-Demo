@@ -97,7 +97,7 @@ def subtask1(fp_vector, x_p, y_p):
     simulator = QasmSimulator()
     compiled_circuit = transpile(qc, simulator)
 
-    job = simulator.run(compiled_circuit, shots=10000)
+    job = simulator.run(compiled_circuit, shots=1981)
     result = job.result()
     counts = result.get_counts(compiled_circuit)
 

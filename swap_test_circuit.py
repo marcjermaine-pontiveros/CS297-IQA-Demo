@@ -108,7 +108,7 @@ def compute_similarity(fp_vector, test_vector):
         float: The similarity score (P(0) from SWAP test), ranging from 0.0 to 1.0.
                A score of 0.0 can mean zero vectors or maximal dissimilarity.
     """
-    shots = 10000  # Number of times to run the quantum circuit for statistics
+    shots = 1981  # Number of times to run the quantum circuit for statistics
 
     vector_dim = len(fp_vector)
 
@@ -161,7 +161,7 @@ def compute_similarity(fp_vector, test_vector):
     return measured_prob_0
 
 
-def run_circuit(qc, backend="qasm_simulator", shots=10000):
+def run_circuit(qc, backend="qasm_simulator", shots=1981):
     """
     Runs the given Qiskit quantum circuit on a specified Aer backend.
 
@@ -170,7 +170,7 @@ def run_circuit(qc, backend="qasm_simulator", shots=10000):
         backend (str, optional): The Aer backend to use (e.g., 'qasm_simulator', 'statevector_simulator').
                                  Defaults to 'qasm_simulator'.
         shots (int, optional): Number of times the circuit is run to collect measurement statistics.
-                               Defaults to 10000. Not used by 'statevector_simulator'.
+                               Defaults to 1981. Not used by 'statevector_simulator'.
 
     Returns:
         qiskit.result.Result: The result object containing the outcomes of the simulation.

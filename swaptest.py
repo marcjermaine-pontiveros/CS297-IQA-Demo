@@ -158,11 +158,17 @@ if __name__ == "__main__":
 
         st.markdown("---")  # Separator
 
-        st.markdown("### Simulation Settings")
+        # Create two containers so we can render Results above Simulation Settings visually,
+        # while still creating the widgets (sliders) before computing values.
+        results_container = st.container()
+        settings_container = st.container()
 
-        st.markdown("#### RSSI Model Parameters (Log-Distance Model)")
+        # --- Simulation Settings (widgets are created in the settings container) ---
+        settings_container.markdown("### Simulation Settings")
+
+        settings_container.markdown("#### RSSI Model Parameters (Log-Distance Model)")
         # Sliders for configuring the Standard Log-Distance Path Model parameters.
-        A_ref_val = st.slider(
+        A_ref_val = settings_container.slider(
             label="Reference RSSI (A_ref, dBm)",
             min_value=-60.0,
             max_value=-20.0,
@@ -170,7 +176,7 @@ if __name__ == "__main__":
             step=1.0,
             help="RSSI value measured at the reference distance d0 (typically 1m).",
         )
-        n_val_ple = st.slider(
+        n_val_ple = settings_container.slider(
             label="Path Loss Exponent (n)",
             min_value=1.5,
             max_value=6.0,
@@ -178,7 +184,7 @@ if __name__ == "__main__":
             step=0.1,
             help="Rate at which signal strength decreases with distance. Higher is faster attenuation.",
         )
-        d0_val = st.slider(
+        d0_val = settings_container.slider(
             label="Reference Distance (d0, m)",
             min_value=0.1,
             max_value=5.0,
@@ -187,9 +193,9 @@ if __name__ == "__main__":
             help="Reference distance (meters) at which A_ref is measured.",
         )
 
-        st.markdown("#### General RSSI Settings")
+        settings_container.markdown("#### General RSSI Settings")
         # Slider for setting the standard deviation of Gaussian noise added to RSSI values.
-        noise_std_dev = st.slider(
+        noise_std_dev = settings_container.slider(
             label="RSSI Noise Std Dev (dBm)",
             min_value=0.0,
             max_value=10.0,
@@ -198,7 +204,7 @@ if __name__ == "__main__":
             help="Standard deviation of Gaussian noise added to each RSSI reading. 0 means no noise.",
         )
         # Slider for setting the number of RSSI samples to average for each AP-location pair.
-        num_samples_for_avg = st.slider(
+        num_samples_for_avg = settings_container.slider(
             label="RSSI Samples for Averaging",
             min_value=1,
             max_value=20,
@@ -206,7 +212,7 @@ if __name__ == "__main__":
             help="Number of RSSI samples to generate and average. 1 means a single (potentially noisy) reading.",
         )
 
-        st.markdown("---")  # Separator
+        settings_container.markdown("---")  # Separator
 
         # Recompute the fingerprint RSSI database based on current simulation settings.
         # This ensures that reference fingerprints reflect the chosen model parameters, noise, and averaging.
@@ -241,18 +247,19 @@ if __name__ == "__main__":
             fp_rssi_database_computed, rssi_test_vector
         )
 
-        st.markdown("### Results Summary")
+        # --- Results (render into results_container so it appears above settings) ---
+        results_container.markdown("### Results Summary")
         # Display the simulated RSSI vector for the test location.
-        st.markdown(f"""
+        results_container.markdown(f"""
             **Simulated RSS Test Vector (Blue Dot):** \n
             `{np.round(np.array(rssi_test_vector), 3)}`
             """)
         # Display the most probable location based on the highest similarity score.
-        st.markdown(f"**Probable Location**: {fp_l_database[prob_loc]}")
+        results_container.markdown(f"**Probable Location**: {fp_l_database[prob_loc]}")
 
         # Section: Detailed Similarity Scores
         # Displays a sorted table of all fingerprint locations and their similarity scores to the test vector.
-        st.markdown("### Detailed Similarity Scores")
+        results_container.markdown("### Detailed Similarity Scores")
         if fp_rssi_probability_database:
             similarity_data = [
                 {"Reference Point": fp_l_database[key], "Similarity Score": score}
@@ -260,9 +267,9 @@ if __name__ == "__main__":
             ]
             similarity_df = pd.DataFrame(similarity_data)
             similarity_df_sorted = similarity_df.sort_values(by="Similarity Score", ascending=False)
-            st.dataframe(similarity_df_sorted.style.format({"Similarity Score": "{:.4f}"}))
+            results_container.dataframe(similarity_df_sorted.style.format({"Similarity Score": "{:.4f}"}))
         else:
-            st.markdown("Similarity scores are being computed...")
+            results_container.markdown("Similarity scores are being computed...")
 
         # Pass necessary variables to the main area for further display (e.g., in expanders).
         prob_loc_pass, rssi_test_vector_pass = prob_loc, rssi_test_vector
@@ -401,7 +408,7 @@ if __name__ == "__main__":
 
         # Display the quantum circuit and measurement histogram if vectors were valid and circuit was generated.
         if qc and display_vector_dim > 0 and (display_norm_v1 != 0 and display_norm_v2 != 0):
-            shots = 10000  # Number of shots for running this display circuit.
+            shots = 1981  # Number of shots for running this display circuit.
             qc_plot = qc.draw(output="mpl", style={"figwidth": 10, "fontsize": 8})
             st.pyplot(fig=qc_plot)
 
@@ -450,7 +457,7 @@ if __name__ == "__main__":
                Parameters `A_ref` (Reference RSSI), `n` (Path Loss Exponent), and `d0` (Reference Distance) are configurable in the sidebar. 
                The previous model was based on `RSSI = -10*n*log10(distance + 1) - C`.
             3. To perform fingerprint matching, the quantum algorithm proposed by [Shokry et al., 2020](https://arxiv.org/pdf/2106.11751.pdf) is used. This primarily involves the SWAP test circuit for comparing state vector similarity. The state vectors are prepared using amplitude encoding of the (potentially padded and normalized) RSSI vectors.
-            4. To estimate the similarity score (probability of measuring '0'), the SWAP test circuit is simulated 10000 times (shots).
+            4. To estimate the similarity score (probability of measuring '0'), the SWAP test circuit is simulated 1981 times (shots).
             
             The web app renders the circuit diagram for computing the similarity score between the current RSS vector of the receiver (Test Vector) and the Fingerprint Vector identified as the most probable match.
             Feedbacks are very welcome, especially on how the computation of RSS values can be improved/simulated and how the effect of obstacles like walls can be added to the system.
